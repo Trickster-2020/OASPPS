@@ -1,0 +1,88 @@
+﻿@page "/studentprofile/{Id}"
+@inject IStudentService studentService
+@rendermode InteractiveWebAssembly
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+@if(update_student.Id is not null)
+{
+    <div>
+        <FluentTextField @bind-Value="update_student.Id" AriaLabel="Id" Placeholder="Teacher Id" Disabled></FluentTextField>
+        <FluentTextField @bind-Value="update_student.Name" Placeholder="Name" Required />
+        <FluentTextField @bind-Value="update_student.Email" Placeholder="Email" Required />
+        <FluentSelect name="Teacher" Id="update_Gender" @bind-Value="student.Gender" TOption="string" Required>
+            <FluentOption Value="Null">Select Gender..</FluentOption>
+            <FluentOption Value="Male">Male</FluentOption>
+            <FluentOption Value="Female">Female</FluentOption>
+        </FluentSelect>
+        <FluentTextField @bind-Value="update_student.ContactNo" Placeholder="ContactNo" Required />
+        <InputFile OnChange="HandleInput" Required></InputFile>
+        <div>
+            <FluentButton Appearance="Appearance.Accent" OnClick="UpdateStudent">Update</FluentButton>
+            <FluentButton Appearance="Appearance.Accent" OnClick="CancleStudent">Cancle</FluentButton>
+        </div>
+        <br />
+        <FluentDivider>
+        </FluentDivider>
+    </div>
+}
+
+
+@if (student is not null)
+{
+    <FluentCard Width="500px" Height="500px">
+        <div>
+            <img src="@student.ImageURL" alt="Teacher Image" width="100%" height="80%" />
+            <h3>@student.Name</h3>
+            <p>@student.Email</p>
+            <FluentButton IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() =>BindStudent())" />
+            <FluentButton IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteStudent())" />
+        </div>
+
+        <br />
+    </FluentCard>
+}
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected StudentDto? student = new();
+    protected StudentDto? update_student = new();
+
+    protected string? fileUrl { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        student = await this.studentService.Get_Student(Id);
+    }
+    protected async void DeleteStudent()
+    {
+        await this.studentService.Delete_Student(Id);
+    }
+
+    protected async Task HandleInput(InputFileChangeEventArgs e)
+    {
+
+        var file = e.File;
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).ReadAsync(buffer);
+        fileUrl = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+        student.ImageURL = fileUrl;
+    }
+    protected async void UpdateStudent()
+    {
+        await this.studentService.Update_Student(update_student);
+    }
+    protected async void BindStudent()
+    {
+        update_student = student;
+
+    }
+    protected async void CancleStudent()
+    {
+        update_student = new();
+
+    }
+}

@@ -1,0 +1,244 @@
+﻿@page "/quizes"
+@inject IQuizService quizService
+@inject ISubjectService subjectService
+@inject ITeachService teachService
+@inject ISemesterService semesterService
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<AuthorizeView Roles="Teacher,Student">
+    @{
+        email = context.User.Identity?.Name;
+    }
+    @if (context.User.IsInRole("Teacher"))
+    {
+        @if (quiz.Id is null)
+        {
+            <div>
+                <FluentTextField @bind-Value="new_Quiz.Id" AriaLabel="Id" Placeholder="Quiz Id"></FluentTextField>
+                <FluentTextField @bind-Value="new_Quiz.Title" Placeholder="Title" Required />
+                <FluentTextField @bind-Value="new_Quiz.Description" Placeholder="Description" Required />
+                <FluentTextField @bind-Value="new_Quiz.Option1" Placeholder="Option1" Required />
+                <FluentTextField @bind-Value="new_Quiz.Option2" Placeholder="Option2" Required />
+                <FluentTextField @bind-Value="new_Quiz.Option3" Placeholder="Option3" Required />
+                <FluentTextField @bind-Value="new_Quiz.Option4" Placeholder="Option4" Required />
+                <FluentTextField @bind-Value="new_Quiz.Answer" Placeholder="Answer" Required />
+                <FluentSelect name="quiz" Id="Name" @bind-Value="new_Quiz.Subject_Id" TOption="string" Required>
+                    <FluentOption Value="">Select Subject ...</FluentOption>
+                    @foreach (TeachDto temp in teach_Data)
+                    {
+                        <FluentOption Value="@temp.Subject_Id">@temp.Subject_Name</FluentOption>
+                        new_Quiz.Subject_Name = temp.Subject_Name;
+                    }
+                </FluentSelect>
+                <div>
+                    <FluentButton Appearance="Appearance.Accent" OnClick="QuizSubmit">Submit</FluentButton>
+                </div>
+                <br />
+            </div>
+        }   
+        else
+        {
+            <div>
+                <FluentTextField @bind-Value="quiz.Id" AriaLabel="Id" Placeholder="Quiz Id" Disabled></FluentTextField>
+                <FluentTextField @bind-Value="quiz.Title" Placeholder="Title" Required />
+                <FluentTextField @bind-Value="quiz.Description" Placeholder="Description" Required />
+                <FluentTextField @bind-Value="quiz.Option1" Placeholder="Option1" Required />
+                <FluentTextField @bind-Value="quiz.Option2" Placeholder="Option2" Required />
+                <FluentTextField @bind-Value="quiz.Option3" Placeholder="Option3" Required />
+                <FluentTextField @bind-Value="quiz.Option4" Placeholder="Option4" Required />
+                <FluentTextField @bind-Value="quiz.Answer" Placeholder="Answer" Required />
+                <FluentSelect name="subject" Id="Name" @bind-Value="quiz.Subject_Id" TOption="string" Required>
+                    <FluentOption Value="">Select Subject ...</FluentOption>
+                    @foreach (TeachDto temp in teach_Data)
+                    {
+                
+                        <FluentOption Value="@temp.Subject_Id">@temp.Subject_Name</FluentOption>
+                    }
+                </FluentSelect>
+                <div>
+                    <FluentButton  Appearance="Appearance.Accent" OnClick="QuizUpdate">Update</FluentButton>
+                </div>
+                <br />
+                <FluentDivider>
+                </FluentDivider>
+            </div>
+        }
+        <h3>Select Subject for Quiz</h3>
+        <hr />
+        <div style="display: flex; width=100%">
+            @foreach (TeachDto temp in teach_Data)
+            {
+                <FluentButton Appearance="Appearance.Accent" OnClick="()=>getQuiz(temp.Subject_Id)">@temp.Subject_Name</FluentButton>
+                <FluentSpacer />
+            }
+        </div>
+        <hr />
+        @if(teacher_quiz is not null)
+        {
+            foreach(QuizDto data in teacher_quiz)
+            {
+                <FluentCard>
+                    <h3 style="text-align:center;border:1px solid">@data.Title</h3>
+                    <div style="display:flex">
+                        <p>Option 1: @data.Option1</p>
+                        <FluentSpacer />
+                        <p>Option 2: @data.Option2</p>
+                        <FluentSpacer />
+                        <p>Option 3: @data.Option3</p>
+                        <FluentSpacer />
+                        <p>Option 4: @data.Option4</p>
+                    </div>
+                    
+                    <p><i>Answer:</i> @data.Answer</p>
+                    <FluentButton Appearance="Appearance.Accent" OnClick="@(() => BindQuiz(data))">Update</FluentButton>
+                    <FluentButton Appearance="Appearance.Accent" OnClick="@(() => DeleteQuiz(data.Id))">Delete</FluentButton>
+                </FluentCard>
+
+            }
+
+        }
+    }
+    else
+    {
+        <div>
+            <h3>View Quiz</h3>
+            <FluentSelect name="semester" Id="Name" @bind-Value="sem" TOption="string" Required>
+                <FluentOption Value="">Select semester ...</FluentOption>
+                @foreach (SemesterDto temp in semester)
+                {
+                    <FluentOption Value="@temp.Id">@temp.Name</FluentOption>
+                }
+            </FluentSelect>
+            <FluentButton Appearance="Appearance.Accent" OnClick="getSub">Submit</FluentButton>
+            <br />
+            <hr />
+            <div style="display: flex; width=100%">
+                @foreach (SubjectDto temp in subjectdata)
+                {
+                    <FluentButton Appearance="Appearance.Accent" OnClick="()=>getQuiz(temp.Id)">@temp.Name</FluentButton>
+                    <FluentSpacer />
+                }
+            </div>
+        </div>
+        @if (teacher_quiz.Count != 0)
+        {
+            foreach (QuizDto data in teacher_quiz)
+            {
+                <br />
+                
+                <FluentCard>
+                    <h3 style="text-align:center;border:1px solid">@data.Title</h3>
+                    
+                   <div style="display:flex">
+                        <FluentRadioGroup Name="numbers" @bind-Value=ans[i] Style="align-items:center">
+
+                            <FluentRadio Value="@data.Option1" Style="margin-left:80px">@data.Option1</FluentRadio>
+
+                            <FluentRadio Value="@data.Option2" Style="margin-left:80px">@data.Option2</FluentRadio>
+
+                            <FluentRadio Value="@data.Option3" Style="margin-left:80px">@data.Option3</FluentRadio>
+
+                            <FluentRadio Value="@data.Option4" Style="margin-left:80px">@data.Option4</FluentRadio>
+                        </FluentRadioGroup>                      
+                   </div>     
+                </FluentCard>
+                i++;
+                
+                
+            }
+            <FluentButton Appearance="Appearance.Accent" Style="align-self:center" OnClick="calculate_Score">Submit</FluentButton>
+            @if (test)
+            {
+                <p>Your score is @score</p>
+            }
+            
+        }
+        
+    }
+   </AuthorizeView>
+
+@code {
+    protected List<TeachDto> teach_Datas;
+    protected List<TeachDto>? teach_Data = new List<TeachDto>();
+    protected IQueryable<QuizDto>? quizdata;
+    protected QuizDto? new_Quiz = new QuizDto();
+    protected QuizDto? quiz = new QuizDto();
+    protected List<SubjectDto>? subjectdata = new();
+    protected SubjectDto? subjectDto = new SubjectDto();
+    protected List<SemesterDto>? semester = new();
+    protected string? email;
+    protected string sem = null;
+    protected string sub = null;
+    protected List<QuizDto>? teacher_quiz = new List<QuizDto>();
+    protected string[] ans = new string[10];
+    protected int score = 0;
+    protected int i = 0;
+    protected bool test;
+
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        quizdata = (await this.quizService.Get_Quiz()).AsQueryable();
+        semester = await this.semesterService.Get_Semester();
+        teach_Datas = await this.teachService.Get_Teach();
+        foreach (TeachDto temp in teach_Datas)
+        {
+            if (temp.Teacher_email == email)
+            {
+                teach_Data.Add(temp);
+            }
+        }
+    }
+
+    protected async void QuizSubmit()
+    {
+
+        await this.quizService.Post_Quiz(new_Quiz);
+    }
+
+    protected void BindQuiz(QuizDto quizDto)
+    {
+        quiz = quizDto;
+    }
+    protected async void DeleteQuiz(string id)
+    {
+        await quizService.Delete_Quiz(id);
+    }
+    protected async void QuizUpdate()
+    {
+        await quizService.Update_Quiz(quiz);
+    }
+    protected async void getQuiz(string sub_Id)
+    {
+        teacher_quiz.Clear();
+
+        foreach (QuizDto data in quizdata)
+        {
+            if(data.Subject_Id == sub_Id)
+            {
+                teacher_quiz.Add(data);
+            }
+        }
+    }
+    protected async Task getSub()
+    {
+        subjectdata = await this.subjectService.GetSubjectBySemester(sem);
+
+    }
+    protected void calculate_Score()
+    {
+        int t = 0;
+        foreach (QuizDto data in teacher_quiz)
+        {
+            if (ans[t+1] == data.Answer)
+            {
+                score += 10;
+            }
+            t++;
+        }
+        test = true;
+    }
+}

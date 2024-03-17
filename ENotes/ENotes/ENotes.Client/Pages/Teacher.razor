@@ -1,0 +1,78 @@
+﻿@page "/teachers"
+@inject ITeacherService teacherService
+@rendermode InteractiveWebAssembly
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+    <div>
+        <FluentTextField @bind-Value="new_Teacher.Id" AriaLabel="Id" Placeholder="Teacher Id"></FluentTextField>
+        <FluentTextField @bind-Value="new_Teacher.Name" Placeholder="Name" Required />
+        <FluentTextField @bind-Value="new_Teacher.Email" Placeholder="Email" Required />
+
+        <FluentSelect name="Teacher" Id="Gender" @bind-Value="new_Teacher.Gender" TOption="string" Required>
+            <FluentOption Value="Null">Select Gender..</FluentOption>
+            <FluentOption Value="Male">Male</FluentOption>
+            <FluentOption Value="Female">Female</FluentOption>
+        </FluentSelect>
+
+        <FluentTextField @bind-Value="new_Teacher.ContactNo" Placeholder="ContactNo" Required />
+        <InputFile OnChange="HandleInput" Required></InputFile>
+        <div>
+            <FluentButton  Appearance="Appearance.Accent" OnClick="TeacherSubmit">Submit</FluentButton>
+        </div>
+        <br />
+        <FluentDivider>
+        </FluentDivider>
+
+    </div>
+
+
+@if (data is not null)
+{
+    <div style="height: 434px; overflow:auto;" tabindex="-1">
+        <FluentDataGrid Items="data" Virtualize="true" ItemSize="46" GenerateHeader="GenerateHeaderOption.Sticky" TGridItem="TeacherDto">
+            <PropertyColumn Title="ID" Property="@(p => p.Id)" />  
+            <PropertyColumn Title="Name" Property="@(p => p.Name)"/>
+            <PropertyColumn Title="Gender" Property="@(p => p.Gender)" /> 
+            <PropertyColumn Title="Email" Property="@(p => p.Email)" />
+            <PropertyColumn Title="Contact" Property="@(p => p.ContactNo)" />
+
+            <TemplateColumn Title="Action">
+                <a href="/teacherprofile/@context.Id"><FluentButton>View</FluentButton></a>
+            </TemplateColumn>
+        </FluentDataGrid> 
+    </div>
+
+}
+
+@code {
+
+    protected IQueryable<TeacherDto>? data;
+    protected TeacherDto? new_Teacher = new TeacherDto();
+    protected string? fileUrl { get; set; }
+
+    //As the page is loaded this function execute first which helps to load the data
+    protected async override Task OnInitializedAsync()
+    {
+        data = (await this.teacherService.Get_Teachers()).AsQueryable();
+
+    }
+
+    protected async Task HandleInput(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).ReadAsync(buffer);
+        fileUrl = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+    }
+
+    //Post subject method
+    protected async void TeacherSubmit()
+    {
+        new_Teacher.ImageURL = fileUrl;
+        await this.teacherService.Post_Teacher(new_Teacher);
+
+    }
+
+
+}

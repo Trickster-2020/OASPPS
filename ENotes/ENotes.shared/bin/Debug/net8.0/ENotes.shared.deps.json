@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "ENotes.shared/1.0.0": {
+        "runtime": {
+          "ENotes.shared.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ENotes.shared/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

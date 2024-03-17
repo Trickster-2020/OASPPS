@@ -1,0 +1,113 @@
+﻿@page "/teaches"
+@inject ITeachService teachService
+@inject ITeacherService teacherService
+@inject ISubjectService subjectService
+@rendermode InteractiveWebAssembly
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+@if(teach.Id is null)
+{
+    <div>
+        <FluentTextField @bind-Value="new_Teach.Id" AriaLabel="Subject Id" Placeholder="Teach Id"></FluentTextField>
+        <FluentSelect name="teacher" Id="Name" @bind-Value="new_Teach.Teacher_Id" TOption="string" Required>
+            <FluentOption Value="">Select Teacher ...</FluentOption>
+            @foreach (TeacherDto temp in teacherdata)
+            {
+                <FluentOption Value="@temp.Id">@temp.Name</FluentOption>
+            }
+        </FluentSelect>
+        <FluentSelect name="subject" Id="Name" @bind-Value="new_Teach.Subject_Id" TOption="string" Required>
+            <FluentOption Value="">Select Subject ...</FluentOption>
+            @foreach (SubjectDto temp in subjectdata)
+            {
+                <FluentOption Value="@temp.Id">@temp.Name</FluentOption>
+            }
+        </FluentSelect>
+        <div>
+            <FluentButton  Appearance="Appearance.Accent" OnClick="TeachSubmit">Submit</FluentButton>
+        </div>
+        <br />
+        <FluentDivider>
+        </FluentDivider>
+
+    </div>
+}
+else
+{
+    <div>
+        <FluentTextField @bind-Value="teach.Id" AriaLabel="Subject Id" Placeholder="Teach Id" Disabled></FluentTextField>
+        <FluentSelect name="teacher" Id="Name" @bind-Value="teach.Teacher_Id" TOption="string" Required>
+            <FluentOption Value="">Select Teacher ...</FluentOption>
+            @foreach (TeacherDto temp in teacherdata)
+            {
+                <FluentOption Value="@temp.Id">@temp.Name</FluentOption>
+            }
+        </FluentSelect>
+        <FluentSelect name="subject" Id="Name" @bind-Value="teach.Subject_Id" TOption="string" Required>
+            <FluentOption Value="">Select Subject ...</FluentOption>
+            @foreach (SubjectDto temp in subjectdata)
+            {
+                <FluentOption Value="@temp.Id">@temp.Name</FluentOption>
+            }
+        </FluentSelect>
+        <div>
+            <FluentButton  Appearance="Appearance.Accent" OnClick="TeachUpdate">Update</FluentButton>
+        </div>
+        <br />
+        <FluentDivider>
+        </FluentDivider>
+
+    </div>
+}
+
+
+@if (teachdata is not null)
+{
+    <div style="height: 434px; overflow:auto;" tabindex="-1">
+        <FluentDataGrid Items="teachdata" Virtualize="true" ItemSize="46" GenerateHeader="GenerateHeaderOption.Sticky" TGridItem="TeachDto">
+            <PropertyColumn Title="ID" Property="@(p => p.Id)" />
+
+            <PropertyColumn Title="Teacher Name" Property="@(p => p.Teacher_Name)" />
+            <PropertyColumn Title="Subject Name" Property="@(p => p.Subject_Name)" />
+            <TemplateColumn Title="Action">
+                <FluentButton IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() =>BindTeach(context))" />
+                <FluentButton IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteTeach(context.Id))" />
+            </TemplateColumn>
+        </FluentDataGrid>
+    </div>
+
+}
+
+@code {
+    protected IQueryable<TeachDto>? teachdata;
+    protected List<TeacherDto>? teacherdata = new List<TeacherDto>();
+    protected List<SubjectDto>? subjectdata = new List<SubjectDto>();
+    protected TeachDto? new_Teach = new TeachDto();
+    protected TeachDto? teach = new();
+    protected async override Task OnInitializedAsync()
+    {
+        teachdata = (await this.teachService.Get_Teach()).AsQueryable();
+        teacherdata = (await this.teacherService.Get_Teachers());
+        subjectdata = (await this.subjectService.Get_Subject());       
+    }
+    protected async void TeachSubmit()
+    {
+        new_Teach.Teacher_Name = "";
+        new_Teach.Subject_Name = "";
+        new_Teach.Teacher_email = "";
+        await teachService.Post_Teach(new_Teach);
+    }
+    protected void BindTeach(TeachDto teachDto)
+    {
+        teach = teachDto;
+    }
+    protected async void DeleteTeach(string id)
+    {
+        await teachService.Delete_Teach(id);
+    }
+    protected async void TeachUpdate()
+    {
+        await teachService.Update_Teach(teach);
+    }
+}

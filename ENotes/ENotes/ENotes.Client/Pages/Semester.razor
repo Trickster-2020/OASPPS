@@ -1,0 +1,113 @@
+﻿@page "/semesters"
+@inject ISemesterService semesterService
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<AuthorizeView Roles="Admin">
+   
+    @if (semester.Id is null)
+    {
+        <div>
+            <FluentTextField @bind-Value="new_semester.Id" AriaLabel="Semester Id" Placeholder="Semester Id"></FluentTextField>
+            <FluentTextField @bind-Value="new_semester.Name" Placeholder="Semester Name" Required />
+            <div>
+                <FluentButton Appearance="Appearance.Accent" OnClick="HandleSubmit">Submit</FluentButton>
+            </div>
+            <br />
+            <FluentDivider>
+            </FluentDivider>
+        </div>
+    }
+    else
+    {
+        <div>
+            <FluentTextField @bind-Value="semester.Id" AriaLabel="Semester Id" Placeholder="Semester Id" Disabled></FluentTextField>
+            <FluentTextField @bind-Value="semester.Name" Placeholder="Semester Name" Required />
+            <div>
+                <div>
+                    <FluentButton Appearance="Appearance.Accent" OnClick="UpdateSemester">Update</FluentButton>
+                    <FluentButton Appearance="Appearance.Accent" OnClick="CancleSubmit">Cancel</FluentButton>
+                </div>
+            </div>
+            <br />
+            <FluentDivider>
+            </FluentDivider>
+        </div>
+    }
+    <div>
+        <h3>Semester</h3>
+        @if (data is null)
+        {
+            <h2>Loading</h2>
+        }
+        else
+        {
+            <div style="height: 434px; overflow:auto;" tabindex="-1">
+                <FluentDataGrid Items="data" Virtualize="true" ItemSize="46" GenerateHeader="GenerateHeaderOption.Sticky" TGridItem="SemesterDto">
+                    <PropertyColumn Title="ID" Property="@(p => p.Id)" />
+                    <PropertyColumn Title="Name" Property="@(p => p.Name)" />
+                    <TemplateColumn Title="Action" Context="tempcontext">
+                        <FluentButton IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() =>BindSemester(tempcontext))" />
+                        <FluentButton IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteSemester(tempcontext.Id))" />
+                    </TemplateColumn>
+                </FluentDataGrid>
+            </div>
+
+        }
+    </div>
+</AuthorizeView>
+<AuthorizeView Roles="Teacher,Student">
+    <div>
+        <h3>Semester</h3>
+        @if (data is null)
+        {
+            <h2>Loading</h2>
+        }
+        else
+        {
+            <div style="height: 434px; overflow:auto;" tabindex="-1">
+                <FluentDataGrid Items="data" Virtualize="true" ItemSize="46" GenerateHeader="GenerateHeaderOption.Sticky" TGridItem="SemesterDto">
+                    <PropertyColumn Title="ID" Property="@(p => p.Id)" />
+                    <PropertyColumn Title="Name" Property="@(p => p.Name)" />
+                </FluentDataGrid>
+            </div>
+
+        }
+    </div>
+</AuthorizeView>
+@code {
+    SemesterDto new_semester = new SemesterDto();
+    SemesterDto semester = new SemesterDto();
+    protected List<SemesterDto>? semesters;
+    protected IQueryable<SemesterDto>? data;
+
+
+    protected async void HandleSubmit()
+    {
+        await semesterService.Post_Semester(new_semester);
+    }
+    protected async override Task OnInitializedAsync()
+    {
+        data = (await this.semesterService.Get_Semester()).AsQueryable();
+    }
+    protected async void DeleteSemester(string id)
+    {
+        await semesterService.Delete_Semester(id);
+        semesters = await semesterService.Get_Semester();
+    }
+
+    protected void BindSemester(SemesterDto semesterDto)
+    {
+        semester = semesterDto;
+    }
+    protected async void UpdateSemester()
+    {
+        await this.semesterService.Update_Semester(semester);
+    }
+    protected async void CancleSubmit()
+    {
+        semester = new();
+    }
+   
+}

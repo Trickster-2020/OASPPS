@@ -1,0 +1,88 @@
+﻿@page "/teacherprofile/{Id}"
+@inject ITeacherService teacherService
+@rendermode InteractiveWebAssembly
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+@if(update_teacher.Id is not null)
+{
+    <div>
+        <FluentTextField @bind-Value="update_teacher.Id" AriaLabel="Id" Placeholder="Teacher Id" Disabled></FluentTextField>
+        <FluentTextField @bind-Value="update_teacher.Name" Placeholder="Name" Required />
+        <FluentTextField @bind-Value="update_teacher.Email" Placeholder="Email" Required />
+        <FluentSelect name="Teacher" Id="Gender" @bind-Value="update_teacher.Gender" TOption="string" Required>
+            <FluentOption Value="Null">Select Gender..</FluentOption>
+            <FluentOption Value="Male">Male</FluentOption>
+            <FluentOption Value="Female">Female</FluentOption>
+        </FluentSelect>
+        <FluentTextField @bind-Value="update_teacher.ContactNo" Placeholder="ContactNo" Required />
+        <InputFile OnChange="HandleInput" @bind-Value="update_teacher.ImageURL" Required></InputFile>
+        <div>
+            <FluentButton  Appearance="Appearance.Accent" OnClick="UpdateTeacher">Update</FluentButton>
+            <FluentButton  Appearance="Appearance.Accent" OnClick="CancleTeacher">Cancle</FluentButton>
+        </div>
+        <br />
+        <FluentDivider>
+        </FluentDivider>
+
+    </div>
+}
+
+@if (teacher is not null)
+    {
+<FluentCard Width="500px" Height="500px">
+    <div>
+            <img src="@teacher.ImageURL" alt="Teacher Image" width="100%" height="80%" />
+            <h3>@teacher.Name</h3>
+            <p>@teacher.Email</p>
+            <FluentButton IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() =>BindTeacher())" />
+            <FluentButton IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteTeacher())" />
+    </div>
+        
+    <br />   
+</FluentCard>
+    }
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected TeacherDto? teacher = new TeacherDto();
+    protected TeacherDto? update_teacher = new();
+    protected string? fileUrl { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        teacher = await this.teacherService.Get_Teacher(Id);
+    }
+    protected async void DeleteTeacher()
+    {
+        await this.teacherService.Delete_Teacher(Id);
+    }
+
+    protected async Task HandleInput(InputFileChangeEventArgs e)
+    {
+
+        var file = e.File;
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).ReadAsync(buffer);
+        fileUrl = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+        teacher.ImageURL = fileUrl;
+    }
+    protected async void UpdateTeacher()
+    {
+     
+        
+        await this.teacherService.Update_Teacher(update_teacher);
+    }
+    protected async void BindTeacher()
+    {
+        update_teacher = teacher;
+        
+    }
+    protected async void CancleTeacher()
+    {
+        update_teacher = new();
+
+    }
+}

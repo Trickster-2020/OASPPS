@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\ENotes\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{DE22CE8A-712A-4CE6-94D7-36F1C8D5CDA6}|ENotes\\ENotes.Client\\ENotes.Client.csproj|d:\\enotes\\enotes\\enotes.client\\pages\\quiz.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{DE22CE8A-712A-4CE6-94D7-36F1C8D5CDA6}|ENotes\\ENotes.Client\\ENotes.Client.csproj|solutionrelative:enotes\\enotes.client\\pages\\quiz.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A373919A-468A-4064-95E5-585573BEC116}|ENotes\\ENotes\\ENotes.csproj|d:\\enotes\\enotes\\enotes\\components\\layout\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A373919A-468A-4064-95E5-585573BEC116}|ENotes\\ENotes\\ENotes.csproj|solutionrelative:enotes\\enotes\\components\\layout\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A373919A-468A-4064-95E5-585573BEC116}|ENotes\\ENotes\\ENotes.csproj|d:\\enotes\\enotes\\enotes\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A373919A-468A-4064-95E5-585573BEC116}|ENotes\\ENotes\\ENotes.csproj|solutionrelative:enotes\\enotes\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Quiz.razor",
+              "DocumentMoniker": "D:\\ENotes\\ENotes\\ENotes.Client\\Pages\\Quiz.razor",
+              "RelativeDocumentMoniker": "ENotes\\ENotes.Client\\Pages\\Quiz.razor",
+              "ToolTip": "D:\\ENotes\\ENotes\\ENotes.Client\\Pages\\Quiz.razor",
+              "RelativeToolTip": "ENotes\\ENotes.Client\\Pages\\Quiz.razor",
+              "ViewState": "AQIAAHAAAAAAAAAAAAAuwIMAAABEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-03-17T09:55:09.442Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "NavMenu.razor",
+              "DocumentMoniker": "D:\\ENotes\\ENotes\\ENotes\\Components\\Layout\\NavMenu.razor",
+              "RelativeDocumentMoniker": "ENotes\\ENotes\\Components\\Layout\\NavMenu.razor",
+              "ToolTip": "D:\\ENotes\\ENotes\\ENotes\\Components\\Layout\\NavMenu.razor",
+              "RelativeToolTip": "ENotes\\ENotes\\Components\\Layout\\NavMenu.razor",
+              "ViewState": "AQIAAEsAAAAAAAAAAAAAAE8AAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-03-17T09:39:26.353Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Home.razor",
+              "DocumentMoniker": "D:\\ENotes\\ENotes\\ENotes\\Components\\Pages\\Home.razor",
+              "RelativeDocumentMoniker": "ENotes\\ENotes\\Components\\Pages\\Home.razor",
+              "ToolTip": "D:\\ENotes\\ENotes\\ENotes\\Components\\Pages\\Home.razor",
+              "RelativeToolTip": "ENotes\\ENotes\\Components\\Pages\\Home.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-03-17T09:24:46.951Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+﻿@page "/notes"
+@inject INoteService noteService
+@inject ITeacherService teacherService
+@inject ISubjectService subjectService
+@inject ISemesterService semesterService
+@inject ITeachService teachService
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<AuthorizeView Roles="Admin,Teacher,Student">
+    @{
+        email = context.User.Identity?.Name;
+    }
+    @if (context.User.IsInRole("Teacher"))
+    {
+        <h3>Add Note</h3>
+        <div>
+            <FluentTextField @bind-Value="new_Note.Id" AriaLabel="Id" Placeholder="Note Id"></FluentTextField>
+            <FluentTextField @bind-Value="new_Note.Title" Placeholder="Name" Required />
+            <FluentTextField @bind-Value="new_Note.Description" Placeholder="Description" Required />
+            <FluentSelect name="teacher" Id="Name" @bind-Value="new_Note.Teacher_Id" TOption="string" Required>
+                <FluentOption Value="">Select Teacher ...</FluentOption>
+                @foreach (TeacherDto temp in teacherdata)
+                {
+                    <FluentOption Value="@temp.Id">@temp.Name</FluentOption>
+                }
+            </FluentSelect>
+            <FluentSelect name="subject" Id="Name" @bind-Value="new_Note.Subject_Id" TOption="string" Required>
+                <FluentOption Value="">Select Subject ...</FluentOption>
+                @foreach (SubjectDto temp in subjects)
+                {
+                    <FluentOption Value="@temp.Id">@temp.Name</FluentOption>
+                }
+            </FluentSelect>
+            <InputDate @bind-Value="new_Note.Date" Placeholder="Date" Required />
+            <InputFile OnChange="@HandleInput"></InputFile>
+            <div>
+                <FluentButton Appearance="Appearance.Accent" OnClick="NoteSubmit">Submit</FluentButton>
+            </div>
+            <br />
+        </div>
+        <h3>Select Subject for Note</h3>
+        <hr />
+        @if(teach_Data is not null)
+        {
+            <div style="display: flex; width=100%">
+                @foreach (TeachDto temp in teach_Data)
+                {
+                    <FluentButton Appearance="Appearance.Accent" OnClick="()=>getNote(temp.Subject_Id)">@temp.Subject_Name</FluentButton>
+                    <FluentSpacer />
+                }
+            </div>
+        }
+        
+        <hr/>
+        @if (note_data is not null)
+        {
+        
+            <FluentStack>
+                @foreach (var note in note_data)
+                {
+                    <FluentCard Width="300px" Height="300px">
+                        <h3>@note.Title</h3>
+                        <p>@note.Description</p>
+                        @if (note.Note_Data.Contains("data:image"))
+                        {
+                            <a href="@note.Note_Data" download="@note.Title">Download Image</a>
+                            <img src="@note.Note_Data" height="300px" width="300px" />
+                        }
+                        else if (note.Note_Data.Contains("data:application/pdf"))
+                        {
+                            <a href="@note.Note_Data" download="@note.Title">Download PDF</a>
+                            <embed src="@note.Note_Data" width="100%" height="400px" type="application/pdf" />
+
+                        }
+                    </FluentCard>
+
+                }
+            </FluentStack>
+
+        }
+    }
+    @if (context.User.IsInRole("Student"))
+    {
+        <div>
+            <h3>View Note</h3>
+            <FluentSelect name="semester" Id="Name" @bind-Value="sem" TOption="string" Required>
+                <FluentOption Value="">Select semester ...</FluentOption>
+                @foreach (SemesterDto temp in semester)
+                {
+                    <FluentOption Value="@temp.Id">@temp.Name</FluentOption>
+                }
+            </FluentSelect>
+            <FluentButton Appearance="Appearance.Accent" OnClick="getSub">Submit</FluentButton>
+            <br />
+            <hr />
+            <div style="display: flex; width=100%">
+                @foreach (SubjectDto temp in subjectdata)
+                {
+                    <FluentButton Appearance="Appearance.Accent" OnClick="()=>getNotes(temp.Id)">@temp.Name</FluentButton>
+                    <FluentSpacer />
+                }
+            </div>
+        </div>
+        @if (notedata is not null)
+        {
+            <hr />
+            <FluentStack>
+                @foreach (var note in notedata)
+                {
+                    <FluentCard Width="300px" Height="300px">
+                        <h3>@note.Title</h3>
+                        <p>@note.Description</p>
+                        @if (note.Note_Data.Contains("data:image"))
+                        {
+                            <a href="@note.Note_Data" download="@note.Title">Download Image</a>
+                            <img src="@note.Note_Data" height="300px" width="300px" />
+                        }
+                        else if (note.Note_Data.Contains("data:application/pdf"))
+                        {
+                            <a href="@note.Note_Data" download="@note.Title">Download PDF</a>
+                            <embed src="@note.Note_Data" width="100%" height="400px" type="application/pdf" />
+
+                        }
+                    </FluentCard>
+
+                }
+            </FluentStack>
+
+        }
+    }
+</AuthorizeView>
+
+@code {
+    protected List<TeachDto> teach_datas;
+    protected List<TeachDto> teach_Data = new List<TeachDto>();
+    protected List<NoteDto> notedata = new List<NoteDto>();
+    protected NoteDto? new_Note = new NoteDto();
+    protected List<TeacherDto>? teacherdata = new List<TeacherDto>();
+    protected List<SubjectDto>? subjects = new List<SubjectDto>();
+    protected List<SubjectDto>? subjectdata = new List<SubjectDto>();
+    protected List<SemesterDto>? semester = new();
+    protected string sem = null;
+    protected string sub = null;
+    protected string fileUrl { get; set; } = "";
+    protected string email;
+    protected List<NoteDto> note_data = new List<NoteDto>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        teacherdata = (await this.teacherService.Get_Teachers()); 
+        semester = await this.semesterService.Get_Semester();
+        subjects = await this.subjectService.Get_Subject();
+        teach_datas = await this.teachService.Get_Teach();
+        foreach(TeachDto data in teach_datas)
+        {
+            if(data.Teacher_email == email)
+            {
+                teach_Data.Add(data);
+            }
+        }
+    }
+    protected async Task getSub()
+    {
+        subjectdata = await this.subjectService.GetSubjectBySemester(sem);
+    }
+
+    protected async Task getNotes(string subjectId)
+    {
+        notedata = await noteService.Get_Note(subjectId);
+    }
+
+    protected async Task HandleInput(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024).ReadAsync(buffer);
+        if (file.ContentType.Contains("image"))
+        {
+            fileUrl = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+        }
+        else if (file.ContentType.Contains("pdf"))
+        {
+            fileUrl = $"data:application/pdf;base64,{Convert.ToBase64String(buffer)}";
+        }
+    }
+
+
+    protected async Task NoteSubmit()
+    {
+        new_Note.Note_Data = fileUrl;
+        new_Note.Download_Count = 2;
+        new_Note.Teacher_Name = "";
+        new_Note.Subject_Name = "";
+        await noteService.Post_Note(new_Note);
+    }
+    protected async void getNote(string sub_Id)
+    {
+        note_data.Clear();
+        foreach (NoteDto data in notedata)
+        {
+            if (data.Subject_Id == sub_Id)
+            {
+                note_data.Add(data);
+            }
+        }
+    }
+}
+
+

@@ -1,0 +1,33 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\ENotes\\ENotes\\ENotes\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\ENotes.bundle.scp.css",
+      "PackagePath": "staticwebassets\\ENotes.bundle.scp.css"
+    },
+    {
+      "Id": "D:\\ENotes\\ENotes\\ENotes\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "D:\\ENotes\\ENotes\\ENotes\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.ENotes.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.ENotes.props",
+      "PackagePath": "build\\ENotes.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.ENotes.props",
+      "PackagePath": "buildMultiTargeting\\ENotes.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.ENotes.props",
+      "PackagePath": "buildTransitive\\ENotes.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

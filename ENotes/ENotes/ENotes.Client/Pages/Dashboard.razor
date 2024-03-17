@@ -1,0 +1,184 @@
+﻿@page "/dashboard"
+@inject ISemesterService semesterService
+@inject ISubjectService subjectService
+@inject ITeacherService teacherService
+@inject IStudentService studentService
+@inject INoteService noteService
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>Dashboard</PageTitle>
+
+<AuthorizeView Roles="Admin" >
+    @{
+        email = @context.User.Identity?.Name;
+    }
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="card border-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-header">
+                        Total Semesters
+                        <img src="Images/semester.png" />
+                    </h5>
+                    @if (semesters is null)
+                    {
+                        <p class="card-title">0</p>
+                    }
+                    else
+                    {
+                        <p class="card-title">@semesters.Count()</p>
+
+                    }
+                    <a href="/semesters" class="btn btn-primary">View Semesters</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card border-danger mb-3">
+                <div class="card-body">
+                    <h5 class="card-header">Total Subjects</h5>
+                    @if (subjects is null)
+                    {
+                        <p class="card-title">0</p>
+                    }
+                    else
+                    {
+                        <p class="card-title">@subjects.Count()</p>
+                    }
+                    <a href="/subjects" class="btn btn-primary">View Subjects</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card border-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-header">Total Students</h5>
+                    @if (students is null)
+                    {
+                        <p class="card-title">0</p>
+                    }
+                    else
+                    {
+                        <p class="card-title">@students.Count()</p>
+                    }
+                    <a href="/students" class="btn btn-primary">View Students</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card border-info mb-3">
+                <div class="card-body">
+                    <h5 class="card-header">Total Teachers</h5>
+                    @if (teachers is null)
+                    {
+                        <p class="card-title">0</p>
+                    }
+                    else
+                    {
+                        <p class="card-title">@teachers.Count()</p>
+                    }
+                    <a href="/teachers" class="btn btn-primary">View Teachers</a>
+                </div>
+            </div>
+        </div>
+    </div>   
+</AuthorizeView>
+
+<AuthorizeView Roles="Teacher">
+    @{
+        email = @context.User.Identity?.Name;
+    }
+    
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="card border-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-header">
+                        Total Semesters
+                        <img src="Images/semester.png" />
+                    </h5>
+                    @if (semesters is null)
+                    {
+                        <p class="card-title">0</p>
+                    }
+                    else
+                    {
+                        <p class="card-title">@semesters.Count()</p>
+
+                    }
+                    <a href="/semesters" class="btn btn-primary">View Semesters</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card border-danger mb-3">
+                <div class="card-body">
+                    <h5 class="card-header">Total Subjects</h5>
+                    @if (subjects is null)
+                    {
+                        <p class="card-title">0</p>
+                    }
+                    else
+                    {
+                        <p class="card-title">@subjects.Count()</p>
+                    }
+                    <a href="/subjects" class="btn btn-primary">View Subjects</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card border-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-header">Total Students</h5>
+                    @if (students is null)
+                    {
+                        <p class="card-title">0</p>
+                    }
+                    else
+                    {
+                        <p class="card-title">@students.Count()</p>
+                    }
+                    <a href="/students" class="btn btn-primary">View Students</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card border-info mb-3">
+                <div class="card-body">
+                    <h5 class="card-header">Uploaded Notes</h5>
+                    @if (notes is null)
+                    {
+                        <p class="card-title">0</p>
+                    }
+                    else
+                    {
+                        <p class="card-title">@notes.Count()</p>
+                    }
+                    <a href="/teachers" class="btn btn-primary">View Notes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</AuthorizeView>
+ 
+
+
+@code
+{
+    private string? email;
+    private List<NoteDto>? notes;
+    private List<SemesterDto>? semesters;
+    private List<SubjectDto>? subjects;
+    private List<TeacherDto>? teachers;
+    private List<StudentDto>? students;
+    protected async override Task OnInitializedAsync()
+    {
+        semesters = await semesterService.Get_Semester();
+        subjects = await subjectService.Get_Subject();
+        teachers = await teacherService.Get_Teachers();
+        students = await studentService.Get_Students();
+        notes = await noteService.Get_Notes_By_Email(email);
+    }
+}

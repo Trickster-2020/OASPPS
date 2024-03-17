@@ -1,0 +1,131 @@
+﻿@page "/subjects"
+@inject ISubjectService subjectService
+@inject ISemesterService semesterService
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+
+<AuthorizeView Roles="Admin">
+    @if (subject.Id is null)
+    {
+        <div>
+            <FluentTextField @bind-Value="new_Subject.Id" AriaLabel="Subject Id" Placeholder="Subject Id"></FluentTextField>
+            <FluentTextField @bind-Value="new_Subject.Name" Placeholder="Subject Name" Required />
+
+            <FluentSelect name="subject" Id="Name" @bind-Value="new_Subject.Semester_Id" TOption="string" Required>
+                <FluentOption Value="">Select semester ...</FluentOption>
+                @foreach (SemesterDto temp in semester)
+                {
+                    <FluentOption Value="@temp.Id">@temp.Name</FluentOption>
+                }
+            </FluentSelect>
+            <div>
+                <FluentButton Appearance="Appearance.Accent" OnClick="SubjectSubmit">Submit</FluentButton>
+            </div>
+            <br />
+            <FluentDivider>
+            </FluentDivider>
+        </div>
+    }
+    else
+    {
+        <div>
+            <FluentTextField @bind-Value="subject.Id" AriaLabel="Subject Id" Placeholder="Subject Id" Disabled></FluentTextField>
+            <FluentTextField @bind-Value="subject.Name" Placeholder="Subject Name" Required />
+
+            <FluentSelect name="subject" Id="Name" @bind-Value="subject.Semester_Id" TOption="string" Required>
+                <FluentOption Value="">Select semester ...</FluentOption>
+                @foreach (SemesterDto temp in semester)
+                {
+                    <FluentOption Value="@temp.Id">@temp.Name</FluentOption>
+                }
+            </FluentSelect>
+            <div>
+                <FluentButton Appearance="Appearance.Accent" OnClick="UpdateSubject">Update</FluentButton>
+                <FluentButton Appearance="Appearance.Accent" OnClick="CancleSubmit">Cancle</FluentButton>
+            </div>
+            <br />
+            <FluentDivider>
+            </FluentDivider>
+        </div>
+    }
+    <h3>Subject</h3>
+    @if (data is null)
+    {
+        <h2>Loading</h2>
+    }
+    else
+    {
+        <div style="height: 434px; overflow:auto;" tabindex="-1">
+            <FluentDataGrid Items="data" Virtualize="true" ItemSize="46" GenerateHeader="GenerateHeaderOption.Sticky" TGridItem="SubjectDto">
+                <PropertyColumn Title="ID" Property="@(p => p.Id)" />
+                <PropertyColumn Title="Name" Property="@(p => p.Name)" />
+                <PropertyColumn Title="Semester" Property="@(p => p.Semester_Name)" />
+
+                <TemplateColumn Title="Action" Context="tempcontext">
+                    <FluentButton IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() =>BindSubject(tempcontext))" />
+                    <FluentButton IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteSubject(tempcontext.Id))" />
+                </TemplateColumn>
+            </FluentDataGrid>
+        </div>
+
+    }
+</AuthorizeView>
+<AuthorizeView Roles="Teacher,Student">
+    <h3>Subject</h3>
+    @if (data is null)
+    {
+        <h2>Loading</h2>
+    }
+    else
+    {
+        <div style="height: 434px; overflow:auto;" tabindex="-1">
+            <FluentDataGrid Items="data" Virtualize="true" ItemSize="46" GenerateHeader="GenerateHeaderOption.Sticky" TGridItem="SubjectDto">
+                <PropertyColumn Title="ID" Property="@(p => p.Id)" />
+                <PropertyColumn Title="Name" Property="@(p => p.Name)" />
+                <PropertyColumn Title="Semester" Property="@(p => p.Semester_Name)" />
+            </FluentDataGrid>
+        </div>
+
+    }
+</AuthorizeView>
+
+@code {
+
+    protected IQueryable<SubjectDto>? data;
+    protected SubjectDto new_Subject = new SubjectDto();
+    protected SubjectDto subject = new SubjectDto();
+    protected List<SemesterDto>? semester=new();
+
+    //As the page is loaded this function execute first which helps to load the data 
+    protected async override Task OnInitializedAsync()
+    {
+        data = (await this.subjectService.Get_Subject()).AsQueryable();
+        semester = await this.semesterService.Get_Semester();
+    }
+    //Post subject method
+    protected async void SubjectSubmit()
+    {
+        await this.subjectService.Post_Subject(new_Subject);
+
+    }
+
+    protected async void DeleteSubject(string id)
+    {
+        await this.subjectService.Delete_Subject(id);
+    }
+
+    protected void BindSubject(SubjectDto subjectDto)
+    {
+        subject = subjectDto;
+    }
+    protected async void UpdateSubject()
+    {
+        await this.subjectService.Update_Subject(subject);
+    }
+    protected async void CancleSubmit()
+    {
+        subject = new();
+    }
+}

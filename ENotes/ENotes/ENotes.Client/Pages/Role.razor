@@ -1,0 +1,72 @@
+﻿@page "/roles"
+@inject IDialogService DialogService
+@inject IRoleService _roleservice
+@rendermode InteractiveWebAssembly
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+
+
+
+
+@if (roleDtos is null)
+{
+    <p>No Data</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Action </th>
+        </thead>
+        <tbody>
+            @foreach (RoleDto role in roleDtos)
+            {
+                <tr>
+                    <td>@role.Id</td>
+                    <td>@role.Name</td>
+                    <td>
+                        <FluentButton Appearance="Appearance.Accent"  OnClick="(e=>DeleteRole(role.Id))">Delete</FluentButton>
+                        <FluentButton Appearance="Appearance.Accent" OnClick="(e=>UpdateRole(role))">Update</FluentButton>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    protected RoleDto roleDto = new();
+    protected string message="";
+    protected List<RoleDto>? roleDtos;
+    bool Expanded = true;
+
+
+    protected async void SubmitRole()
+    {
+        message = "";
+        await _roleservice.Post_Role(roleDto);
+        message = message + "Data Added";
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        roleDtos = await _roleservice.Get_Roles();
+    }
+
+    protected async void DeleteRole(string id)
+    {
+        await _roleservice.Delete_Role(id);
+
+        roleDtos = await _roleservice.Get_Roles();
+    }
+    protected  void UpdateRole(RoleDto role)
+    {
+        roleDto.Id = role.Id;
+        roleDto.Name = role.Name;
+
+    }
+    
+}

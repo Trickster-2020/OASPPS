@@ -1,0 +1,10 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>Home</PageTitle>
+
+
+<AuthorizeView>
+    <h1>Welcome @context.User.Identity?.Name</h1>
+</AuthorizeView>

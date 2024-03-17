@@ -1,0 +1,210 @@
+﻿@page "/scores"
+@inject IScoreServices scoreService
+@inject IStudentService studentService
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+<PageTitle>Scores</PageTitle>
+
+
+<AuthorizeView Roles="Admin">
+    @{
+        email = context.User.Identity?.Name;
+    }
+    @if (data is not null)
+    {
+        <div style="height: 434px; overflow:auto;" tabindex="-1">
+            <FluentDataGrid Items="data" Virtualize="true" ItemSize="46" GenerateHeader="GenerateHeaderOption.Sticky" TGridItem="ScoreDto">
+                <PropertyColumn Title="Student Id" Property="@(p => p.Student_ID)" />
+                <PropertyColumn Title="Quiz Mark" Property="@(p => p.Quiz)" />
+                <PropertyColumn Title="Assignment01 Mark" Property="@(p => p.Assignment01)" />
+                <PropertyColumn Title="FirstTerm Mark" Property="@(p => p.FirstTerm_Exam)" />
+                <PropertyColumn Title="Assignment02 Mark" Property="@(p => p.Assignment02)" />
+                <PropertyColumn Title="Assignment03 Mark" Property="@(p => p.Assignment03)" />
+                <PropertyColumn Title="SecondTerm Mark" Property="@(p => p.SecondTerm_Exam)" />
+                <PropertyColumn Title="Predicted Class" Property="@(p => p.Class)" />
+                <PropertyColumn Title="Predicted Grade" Property="@(p => p.Final_Grade)" />
+            </FluentDataGrid>
+        </div>
+
+    }
+</AuthorizeView>
+<AuthorizeView Roles="Teacher">
+    @{
+        email = context.User.Identity?.Name;
+    }
+    @if (score.Student_ID is null)
+    {
+        <div>
+            <FluentSelect name="score" Id="student" @bind-Value="new_Score.Student_ID" TOption="string" Required>
+                <FluentOption Value="">Select Student Id..</FluentOption>
+                @foreach (StudentDto student in studentdata)
+                {
+                    <FluentOption Value="@student.Id">@student.Id</FluentOption>
+                }
+            </FluentSelect>
+            <FluentNumberField @bind-Value="new_Score.Quiz" AriaLabel="Id" Placeholder="Quiz Marks"></FluentNumberField>
+            <FluentNumberField @bind-Value="new_Score.Assignment01" Placeholder="Assignment-1 Marks" Required />
+            <FluentNumberField @bind-Value="new_Score.FirstTerm_Exam" Placeholder="FirstTerm Marks" Required />
+            <FluentNumberField @bind-Value="new_Score.Assignment02" Placeholder="Assignment-2 Marks" Required />
+            <FluentNumberField @bind-Value="new_Score.Assignment03" Placeholder="Assignment-3 Marks" Required />
+            <FluentNumberField @bind-Value="new_Score.SecondTerm_Exam" Placeholder="SecondTerm Marks" Required />
+            <div>
+                <FluentButton Appearance="Appearance.Accent" OnClick="ScoreSubmit">Submit</FluentButton>
+            </div>
+            <br />
+            <FluentDivider>
+            </FluentDivider>
+        </div>
+    }
+    else
+    {
+        <div>
+            <FluentSelect name="score" Id="student" @bind-Value="score.Student_ID" TOption="string" Required Disabled>
+                <FluentOption Value="">Select Student Id..</FluentOption>
+                @foreach (StudentDto student in studentdata)
+                {
+                    <FluentOption Value="@student.Id">@student.Id</FluentOption>
+                }
+            </FluentSelect>
+            <FluentNumberField @bind-Value="score.Quiz" AriaLabel="Id" Placeholder="Quiz Marks"></FluentNumberField>
+            <FluentNumberField @bind-Value="score.Assignment01" Placeholder="Assignment-1 Marks" Required />
+            <FluentNumberField @bind-Value="score.FirstTerm_Exam" Placeholder="FirstTerm Marks" Required />
+            <FluentNumberField @bind-Value="score.Assignment02" Placeholder="Assignment-2 Marks" Required />
+            <FluentNumberField @bind-Value="score.Assignment03" Placeholder="Assignment-3 Marks" Required />
+            <FluentNumberField @bind-Value="score.SecondTerm_Exam" Placeholder="SecondTerm Marks" Required />
+            <div>
+                <FluentButton Appearance="Appearance.Accent" OnClick="UpdateScore">Update</FluentButton>
+                <FluentButton Appearance="Appearance.Accent" OnClick="CancleSubmit">Cancel</FluentButton>
+            </div>
+            <br />
+            <FluentDivider>
+            </FluentDivider>
+
+        </div>
+    }
+    @if (data is not null)
+    {
+        <div style="height: 434px; overflow:auto;" tabindex="-1">
+            <FluentDataGrid Items="data" Virtualize="true" ItemSize="46" GenerateHeader="GenerateHeaderOption.Sticky" TGridItem="ScoreDto">
+                <PropertyColumn Title="Student Id" Property="@(p => p.Student_ID)" />
+                <PropertyColumn Title="Quiz Mark" Property="@(p => p.Quiz)" />
+                <PropertyColumn Title="Assignment01 Mark" Property="@(p => p.Assignment01)" />
+                <PropertyColumn Title="FirstTerm Mark" Property="@(p => p.FirstTerm_Exam)" />
+                <PropertyColumn Title="Assignment02 Mark" Property="@(p => p.Assignment02)" />
+                <PropertyColumn Title="Assignment03 Mark" Property="@(p => p.Assignment03)" />
+                <PropertyColumn Title="SecondTerm Mark" Property="@(p => p.SecondTerm_Exam)" />
+                <PropertyColumn Title="Predicted Class" Property="@(p => p.Class)" />
+                <PropertyColumn Title="Predicted Grade" Property="@(p => p.Final_Grade)" />
+                <TemplateColumn Title="Action" Context="tempcontext">
+                    <FluentButton IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() =>BindScore(tempcontext))" />
+                    <FluentButton IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteScore(tempcontext.Student_ID))" />
+                </TemplateColumn>
+            </FluentDataGrid>
+        </div>
+
+    }
+</AuthorizeView>
+<AuthorizeView Roles="Student">
+    @{
+        email = context.User.Identity?.Name;
+    }
+    @if (data is not null)
+    {
+        <div style="height: 434px; overflow:auto;" tabindex="-1">
+            <FluentDataGrid Items="data" Virtualize="true" ItemSize="46" GenerateHeader="GenerateHeaderOption.Sticky" TGridItem="ScoreDto">
+                <PropertyColumn Title="Student Id" Property="@(p => p.Student_ID)" />
+                <PropertyColumn Title="Quiz Mark" Property="@(p => p.Quiz)" />
+                <PropertyColumn Title="Assignment01 Mark" Property="@(p => p.Assignment01)" />
+                <PropertyColumn Title="FirstTerm Mark" Property="@(p => p.FirstTerm_Exam)" />
+                <PropertyColumn Title="Assignment02 Mark" Property="@(p => p.Assignment02)" />
+                <PropertyColumn Title="Assignment03 Mark" Property="@(p => p.Assignment03)" />
+                <PropertyColumn Title="SecondTerm Mark" Property="@(p => p.SecondTerm_Exam)" />
+                <PropertyColumn Title="Predicted Class" Property="@(p => p.Class)" />
+                <PropertyColumn Title="Predicted Grade" Property="@(p => p.Final_Grade)" />
+            </FluentDataGrid>
+        </div>
+        @if (display_data is not null)
+        {
+            <div style="display:flex;margin-top:-300px">
+                <FluentStack>
+                    <FluentCard Width="400px" Height="400px">
+                        <FluentHeader Style="text-align:center"><b>Predicted Group</b></FluentHeader>
+                        @if(display_data.Class == "G")
+                        {
+                            <h1 style="font-size:200px;text-align:center;color:green"><b>G</b></h1>
+                            <p style="text-align:center">Congrats! You belong to Good group.</p>
+                        }
+                        else
+                        {
+                            <h1 style="font-size:200px;text-align:center;color:red"><b>W</b></h1>
+                            <p style="text-align:center">Attention! You belong to Weak group.</p>
+                        }
+                        
+                    </FluentCard>
+                    <FluentDivider Style="width:200px"></FluentDivider>
+                    <FluentCard Width="400px" Height="400px">
+                        <FluentHeader Style="text-align:center"><b>Predicted Marks</b></FluentHeader>
+                        <h1 style="font-size:200px;text-align:center"><b>@display_data.Final_Grade</b></h1>
+                        <p style="text-align:center">Your predicted marks is @display_data.Final_Grade.</p>
+                    </FluentCard>
+                </FluentStack>
+            </div>
+        }
+        
+        
+    }
+</AuthorizeView>
+
+@code {
+
+    protected IQueryable<ScoreDto>? data;
+    protected ScoreDto? display_data;
+
+    protected string? email;
+    protected List<StudentDto>? studentdata = new List<StudentDto>();
+    protected ScoreDto? new_Score = new ScoreDto();
+    protected ScoreDto? score = new();
+
+
+    //As the page is loaded this function execute first which helps to load the data
+    protected async override Task OnInitializedAsync()
+    {
+        data = (await this.scoreService.Get_Scores()).AsQueryable();
+
+        studentdata = await this.studentService.Get_Students();
+        foreach(ScoreDto score in data)
+        {
+            if(score.Student_Email == email)
+            {
+                data = new List<ScoreDto> { await this.scoreService.Get_Score(score.Student_ID) }.AsQueryable();
+                display_data = await this.scoreService.Get_Score(score.Student_ID);
+            }
+            break;
+        } 
+    }
+    //Post subject method
+    protected async void ScoreSubmit()
+    {
+        new_Score.Class = "d";
+        await this.scoreService.Post_Score(new_Score);
+    }
+    protected async void DeleteScore(string id)
+    {
+        await this.scoreService.Delete_Score(id);
+    }
+    protected void BindScore(ScoreDto scoredto)
+    {
+        score = scoredto;
+    }
+    protected async void UpdateScore()
+    {
+        await this.scoreService.Update_Score(score);
+    }
+    protected async void CancleSubmit()
+    {
+        score = new();
+    }
+}
+
+

@@ -1,0 +1,83 @@
+is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = ENotes.Client
+build_property.RootNamespace = ENotes.Client
+build_property.ProjectDir = D:\ENotes\ENotes\ENotes.Client\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = false
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\ENotes\ENotes\ENotes.Client
+build_property._RazorSourceGeneratorDebug = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/Auth.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/Dashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/Note.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm90ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/Quiz.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUXVpei5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/Role.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUm9sZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/Score.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NvcmUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/Semester.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2VtZXN0ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/Student.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/StudentProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFByb2ZpbGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/Subject.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3ViamVjdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/Teach.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2gucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/Teacher.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/Pages/TeacherProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclByb2ZpbGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = UmVkaXJlY3RUb0xvZ2luLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ENotes/ENotes/ENotes.Client/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
